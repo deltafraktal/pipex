@@ -26,7 +26,7 @@ LIBFT       = libft/libft.a
 
 SRCS        = \
     $(SRC_DIR)/main.c \
-	$(SRC_DIR)/checks_and_free.c \
+	$(SRC_DIR)/utils.c \
 
 SRCS_B		= \
 

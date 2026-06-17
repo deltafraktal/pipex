@@ -6,7 +6,7 @@
 /*   By: dgeara <dgeara@student.42lausanne.ch>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 18:15:27 by dgeara            #+#    #+#             */
-/*   Updated: 2026/06/15 17:25:25 by dgeara           ###   ########.fr       */
+/*   Updated: 2026/06/17 15:47:35 by dgeara           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ void	ft_lstiter(t_list *lst, void (*f)(void *));
 t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *));
 
 /* ft_printf */
-int		ft_printf(const char *, ...);
+/* int		ft_printf(const char *, ...); */
 int		put_c(int c);
 int		put_int(int n);
 int		put_s(char *str);

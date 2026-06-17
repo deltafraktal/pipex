@@ -6,7 +6,7 @@
 /*   By: dgeara <dgeara@student.42lausanne.ch>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/02 23:39:58 by dgeara            #+#    #+#             */
-/*   Updated: 2026/06/15 17:24:22 by dgeara           ###   ########.fr       */
+/*   Updated: 2026/06/17 15:46:10 by dgeara           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,12 @@ char	*find_path(char *cmd, char **envp)
 	char	*result;
 	int		i;
 
+	if (cmd[0] == '/' || (cmd[0] == '.' && cmd[1] == '/'))
+	{
+		if (access(cmd, X_OK) == 0)
+			return (cmd);
+		return (NULL);
+	}
 	path = get_path(envp);
 	if (!path)
 		return (NULL);
@@ -56,13 +62,7 @@ char	*find_path(char *cmd, char **envp)
 	{
 		result = try_path(dirs[i], cmd);
 		if (result)
-		{
-			i = 0;
-			while (dirs[i])
-				free(dirs[i++]);
-			free(dirs);
-			return (result);
-		}
+			return (free_tab(dirs), result);
 		i++;
 	}
 	i = 0;
