@@ -27,6 +27,7 @@ LIBFT       = libft/libft.a
 SRCS        = \
     $(SRC_DIR)/main.c \
 	$(SRC_DIR)/utils.c \
+	$(SRC_DIR)/split_cmd.c \
 
 SRCS_B		= \
 

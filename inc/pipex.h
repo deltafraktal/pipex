@@ -6,7 +6,7 @@
 /*   By: dgeara <dgeara@student.42lausanne.ch>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 21:45:28 by dgeara            #+#    #+#             */
-/*   Updated: 2026/06/15 17:26:21 by dgeara           ###   ########.fr       */
+/*   Updated: 2026/06/17 20:58:44 by dgeara           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,5 +36,9 @@ char	*find_path(char *cmd, char **envp);
 char	*get_path(char **envp);
 char	*try_path(char *dir, char *cmd);
 void	free_tab(char **tab);
+
+// split_cmd
+char	**ft_split_cmd(char const *s, char c);
+void	free_tab_split(char **tab, int i);
 
 #endif
