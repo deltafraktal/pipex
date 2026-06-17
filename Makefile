@@ -30,6 +30,10 @@ SRCS        = \
 	$(SRC_DIR)/split_cmd.c \
 
 SRCS_B		= \
+	$(SRC_B_DIR)/main.c \
+	$(SRC_B_DIR)/utils.c \
+	$(SRC_B_DIR)/utils2.c \
+	$(SRC_B_DIR)/split_cmd.c \
 
 OBJ         = $(SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 OBJ_B       = $(SRCS_B:$(SRC_B_DIR)/%.c=$(OBJ_B_DIR)/%.o)
@@ -49,7 +53,7 @@ $(NAME): $(LIBFT) $(OBJ)
 # ── Targets bonus ───────────────────────────────────────────────────────────────────
 bonus: $(LIBFT) $(OBJ_B)
 	@echo "$(BOLD)$(BLUE)🔗 Linking executable BONUS...$(END)"
-	@$(CC) $(CFLAGS) $(OBJ_B) $(LIBFT)-o $(NAME_B)
+	@$(CC) $(CFLAGS) $(OBJ_B) $(LIBFT) -o $(NAME_B)
 	@echo "$(BOLD)$(GREEN)✔ $(NAME_B) built BONUS successfully$(END)"
 	@$(MAKE) ascii
 

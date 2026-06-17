@@ -6,11 +6,11 @@
 /*   By: dgeara <dgeara@student.42lausanne.ch>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/02 23:39:58 by dgeara            #+#    #+#             */
-/*   Updated: 2026/06/17 21:26:37 by dgeara           ###   ########.fr       */
+/*   Updated: 2026/06/17 22:18:18 by dgeara           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/pipex.h"
+#include "../../inc/pipex_bonus.h"
 
 char	*try_path(char *dir, char *cmd)
 {
