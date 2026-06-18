@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex_bonus.h                                            :+:      :+:    :+:   */
+/*   pipex_bonus.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dgeara <dgeara@student.42lausanne.ch>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 21:45:28 by dgeara            #+#    #+#             */
-/*   Updated: 2026/06/17 20:58:44 by dgeara           ###   ########.fr       */
+/*   Updated: 2026/06/18 01:25:46 by dgeara           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,13 +25,25 @@
 # define YELLOW "\033[33m"
 # define END "\033[0m"
 
+typedef struct s_pipex
+{
+	int	current_fd;
+	int	pipe_fds[2];
+	int	is_heredoc;
+	int	i;
+}	t_pipex;
+
 // main
 int		main(int ac, char **av, char **envp);
-void	child_process1(char **av, int pipe_fds[2], char **envp);
-void	child_process2(char **av, int pipe_fds[2], char **envp);
+int		parse_and_init(t_pipex *p, int ac, char **av);
+int		here_doc(char *limiter);
 void	execute_cmd(char *cmd, char **envp);
 
-//checks and free
+//utils2
+void	run_pipe(t_pipex *p, char **av, char **envp);
+void	run_last_pipe(t_pipex *p, int ac, char **av, char **envp);
+
+//utils
 char	*find_path(char *cmd, char **envp);
 char	*get_path(char **envp);
 char	*try_path(char *dir, char *cmd);

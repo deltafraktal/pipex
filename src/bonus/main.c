@@ -6,7 +6,7 @@
 /*   By: dgeara <dgeara@student.42lausanne.ch>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 21:43:54 by dgeara            #+#    #+#             */
-/*   Updated: 2026/06/17 23:41:10 by dgeara           ###   ########.fr       */
+/*   Updated: 2026/06/18 02:49:03 by dgeara           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@ void	execute_cmd(char *cmd, char **envp)
 	char	*path;
 
 	args = ft_split_cmd(cmd, ' ');
+	if (!args)
+		exit(1);
 	path = find_path(args[0], envp);
 	if (!path)
 	{
@@ -32,16 +34,7 @@ void	execute_cmd(char *cmd, char **envp)
 	exit(1);
 }
 
-static void	child_mid(char *cmd, int fd_in, int fd_out, char **envp)
-{
-	dup2(fd_in, STDIN_FILENO);
-	dup2(fd_out, STDOUT_FILENO);
-	close(fd_in);
-	close(fd_out);
-	execute_cmd(cmd, envp);
-}
-
-static int	here_doc(char *limiter)
+int	here_doc(char *limiter)
 {
 	int		pipe_fds[2];
 	char	*line;
@@ -50,16 +43,13 @@ static int	here_doc(char *limiter)
 		return (perror("pipe"), -1);
 	while (1)
 	{
-		ft_putstr_fd("heredoc> ", 1);
-		line = get_next_line(0);
+		ft_putstr_fd("pipe heredoc> ", STDOUT_FILENO);
+		line = get_next_line(STDIN_FILENO);
 		if (!line)
 			break ;
 		if (ft_strncmp(line, limiter, ft_strlen(limiter)) == 0
 			&& line[ft_strlen(limiter)] == '\n')
-		{
-			free(line);
-			break ;
-		}
+			return (free(line), close(pipe_fds[1]), pipe_fds[0]);
 		ft_putstr_fd(line, pipe_fds[1]);
 		free(line);
 	}
@@ -67,57 +57,49 @@ static int	here_doc(char *limiter)
 	return (pipe_fds[0]);
 }
 
-int	main(int ac, char **av, char **envp)
+int	parse_and_init(t_pipex *p, int ac, char **av)
 {
-	int	pipe_fds[2];
-	int	current_fd;
-	int	last_fd;
-	int	i;
-	int	is_heredoc;
-
 	if (ac < 5)
-		return (ft_putstr_fd("Usage: ./pipex file1 cmd1 ... cmdn file2\n", 2), 1);
-	is_heredoc = (ft_strncmp(av[1], "here_doc", 8) == 0);
-	if (is_heredoc)
+	{
+		ft_putstr_fd("Usage: ./pipex file1 cmd1 ... cmdn file2\n", 2);
+		return (0);
+	}
+	p->is_heredoc = (ft_strncmp(av[1], "here_doc", 8) == 0);
+	if (p->is_heredoc)
 	{
 		if (ac < 6)
-			return (ft_putstr_fd("Usage: ./pipex here_doc LIMITER cmd ... file\n", 2), 1);
-		current_fd = here_doc(av[2]);
+		{
+			ft_putstr_fd("Usage: ./pipex here_doc LIMITER cmd ... file\n", 2);
+			return (0);
+		}
+		p->current_fd = here_doc(av[2]);
 	}
 	else
-		current_fd = open(av[1], O_RDONLY);
-	if (current_fd == -1)
-		return (perror(av[1]), 1);
-	i = 0;
-	while (i < ac - is_heredoc - 3)
+		p->current_fd = open(av[1], O_RDONLY);
+	if (p->current_fd == -1)
+		return (perror(av[1]), 0);
+	return (1);
+}
+
+int	main(int ac, char **av, char **envp)
+{
+	t_pipex	p;
+
+	if (!parse_and_init(&p, ac, av))
+		return (1);
+	p.i = 2 + p.is_heredoc;
+	while (p.i < ac - 1)
 	{
-		if (i == ac - is_heredoc - 2)
-		{
-			if (is_heredoc)
-				last_fd = open(av[ac - 1], O_WRONLY | O_CREAT | O_APPEND, 0644);
-			else
-				last_fd = open(av[ac - 1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
-			if (last_fd == -1)
-				return (perror(av[ac - 1]), 1);
-			if (fork() == 0)
-				child_mid(av[i], current_fd, last_fd, envp);
-			close(last_fd);
-		}
+		if (p.i != ac - 2)
+			run_pipe(&p, av, envp);
 		else
-		{
-			if (pipe(pipe_fds) == -1)
-				return (perror("pipe"), 1);
-			if (fork() == 0)
-				child_mid(av[i], current_fd, pipe_fds[1], envp);
-			close(pipe_fds[1]);
-		}
-		close(current_fd);
-		current_fd = pipe_fds[0];
-		i++;
+			run_last_pipe(&p, ac, av, envp);
+		close(p.current_fd);
+		p.current_fd = p.pipe_fds[0];
+		p.i++;
 	}
-	close(current_fd);
-	i = ac - 3;
-	while (i-- > 0)
+	close(p.current_fd);
+	while (ac-- > 3)
 		wait(NULL);
 	return (0);
 }
