@@ -6,7 +6,7 @@
 /*   By: dgeara <dgeara@student.42lausanne.ch>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 21:43:54 by dgeara            #+#    #+#             */
-/*   Updated: 2026/06/18 02:49:03 by dgeara           ###   ########.fr       */
+/*   Updated: 2026/06/18 03:21:55 by dgeara           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,12 @@ void	execute_cmd(char *cmd, char **envp)
 	char	*path;
 
 	args = ft_split_cmd(cmd, ' ');
-	if (!args)
-		exit(1);
+	if (!args || !args[0])
+	{
+		free_tab(args);
+		ft_putstr_fd("command not found\n", 2);
+		exit(127);
+	}
 	path = find_path(args[0], envp);
 	if (!path)
 	{

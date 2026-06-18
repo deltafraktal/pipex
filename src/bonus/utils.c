@@ -6,7 +6,7 @@
 /*   By: dgeara <dgeara@student.42lausanne.ch>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/02 23:39:58 by dgeara            #+#    #+#             */
-/*   Updated: 2026/06/17 22:18:18 by dgeara           ###   ########.fr       */
+/*   Updated: 2026/06/18 03:18:00 by dgeara           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ void	free_tab(char **tab)
 
 void	free_tab_split(char **tab, int i)
 {
-	while (i > 0)
+	while (i >= 0)
 		free(tab[i--]);
 	free(tab);
 }
